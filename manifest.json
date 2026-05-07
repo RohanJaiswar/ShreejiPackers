@@ -1,0 +1,21 @@
+{
+  "name": "Packer Portal - Shreeji Milk",
+  "short_name": "Packer",
+  "description": "Professional Packer Application for Shreeji Milk Center",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#1677ff",
+  "icons": [
+    {
+      "src": "assets/logo-shree.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/logo-shree.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

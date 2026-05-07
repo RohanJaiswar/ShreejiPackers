@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Packer Dashboard - Shreeji Milk Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1677ff" />
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      background-color: var(--bg-body);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      padding-bottom: 70px; /* Space for bottom nav */
+    }
+    
+    .packer-header {
+      background: white;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .packer-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .packer-header-left img {
+      height: 40px;
+    }
+
+    .packer-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .packer-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Tabs Logic */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Order Cards */
+    .order-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      border: 1px solid var(--border);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .order-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .order-id {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      font-family: monospace;
+    }
+
+    .order-vendor {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-top: 4px;
+    }
+
+    .order-date {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .order-status {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-pending { background: var(--warning-light, #fffbe6); color: var(--warning, #fa8c16); border: 1px solid #ffe58f; }
+    .status-processing { background: var(--info-light, #e6f4ff); color: var(--info, #1677ff); border: 1px solid #91caff; }
+    .status-dispatched { background: var(--success-light, #f6ffed); color: var(--success, #52c41a); border: 1px solid #b7eb8f; }
+    .status-delivered { background: var(--success-light, #f6ffed); color: var(--success, #52c41a); border: 1px solid #b7eb8f; }
+
+    .products-list { margin-bottom: 20px; }
+    .product-item {
+      display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .product-item:last-child { border-bottom: none; }
+    .product-name { font-size: 15px; font-weight: 500; color: var(--text-main); }
+    .product-qty {
+      background: var(--primary); color: white; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 14px; min-width: 30px; text-align: center;
+    }
+    .total-items { font-size: 14px; font-weight: 600; color: var(--text-secondary); margin-top: 12px; text-align: right; }
+
+    .action-btn {
+      width: 100%; padding: 14px; background: var(--success, #52c41a); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: background 0.2s;
+    }
+    .action-btn:hover { background: #389e0d; }
+    .action-btn:disabled { background: var(--border); cursor: not-allowed; }
+
+    .empty-state { text-align: center; padding: 60px 20px; background: white; border-radius: 12px; border: 1px solid var(--border); }
+    .empty-state ion-icon { font-size: 64px; color: var(--text-muted); margin-bottom: 16px; }
+    .empty-state h3 { font-size: 20px; color: var(--text-main); margin-bottom: 8px; }
+    .empty-state p { color: var(--text-secondary); font-size: 15px; }
+
+    .loader { text-align: center; padding: 40px; color: var(--primary); }
+    .loader ion-icon { font-size: 32px; animation: spin 1s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 0; padding-bottom: env(safe-area-inset-bottom, 12px); box-shadow: 0 -4px 12px rgba(0,0,0,0.05); z-index: 1000;
+    }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); cursor: pointer; transition: color 0.2s; width: 33%; }
+    .nav-item ion-icon { font-size: 24px; }
+    .nav-item span { font-size: 12px; font-weight: 500; }
+    .nav-item.active { color: var(--primary); }
+
+    /* Profile Table */
+    .profile-card {
+      background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid var(--border); margin-bottom: 24px;
+    }
+    .profile-card table { width: 100%; border-collapse: collapse; }
+    .profile-card td { padding: 16px 0; border-bottom: 1px solid var(--border); font-size: 15px; }
+    .profile-card tr:last-child td { border-bottom: none; }
+    .profile-label { color: var(--text-secondary); font-weight: 500; width: 40%; }
+    .profile-value { color: var(--text-main); font-weight: 600; text-align: right; }
+    
+    .logout-btn-large {
+      background: var(--danger, #ff4d4f);
+      margin-top: 20px;
+    }
+    .logout-btn-large:hover { background: #cf1322; }
+
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--primary) 0%, #0958d9 100%);
+      border-radius: 12px;
+      padding: 24px;
+      color: white;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 16px rgba(22, 119, 255, 0.2);
+    }
+    .welcome-banner h2 { margin: 0 0 8px 0; font-size: 22px; }
+    .welcome-banner p { margin: 0; font-size: 14px; opacity: 0.9; }
+  </style>
+</head>
+
+<body>
+
+  <header class="packer-header">
+    <div class="packer-header-left">
+      <img src="assets/logo-shree.png" alt="Shreeji" />
+      <span class="packer-title">Packer Portal</span>
+    </div>
+  </header>
+
+  <div class="packer-container">
+    
+    <!-- ================== HOME TAB ================== -->
+    <div id="tab-home" class="tab-content active">
+      <div class="welcome-banner">
+        <h2 id="welcomeGreeting">Welcome, Packer!</h2>
+        <p>Here are the pending orders you need to pack today.</p>
+      </div>
+
+      <div class="page-title">
+        Pending Orders
+        <button class="btn btn-outline" onclick="fetchPendingOrders()" style="display:flex;align-items:center;gap:6px;font-size:14px;padding:8px 12px;">
+          <ion-icon name="refresh-outline"></ion-icon> Refresh
+        </button>
+      </div>
+      
+      <div id="ordersContainer">
+        <div class="loader"><ion-icon name="sync-outline"></ion-icon><div style="margin-top: 12px;">Loading orders...</div></div>
+      </div>
+    </div>
+
+    <!-- ================== HISTORY TAB ================== -->
+    <div id="tab-history" class="tab-content">
+      <div class="page-title">
+        Order History
+        <button class="btn btn-outline" onclick="fetchHistoryOrders()" style="display:flex;align-items:center;gap:6px;font-size:14px;padding:8px 12px;">
+          <ion-icon name="refresh-outline"></ion-icon> Refresh
+        </button>
+      </div>
+      <p style="color: var(--text-secondary); margin-bottom: 20px;">Showing completed and dispatched orders sorted by date.</p>
+      
+      <div id="historyContainer">
+        <div class="loader"><ion-icon name="sync-outline"></ion-icon><div style="margin-top: 12px;">Loading history...</div></div>
+      </div>
+    </div>
+
+    <!-- ================== PROFILE TAB ================== -->
+    <div id="tab-profile" class="tab-content">
+      <div class="page-title">My Profile</div>
+      
+      <div class="profile-card">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <ion-icon name="person-circle-outline" style="font-size: 80px; color: var(--primary);"></ion-icon>
+        </div>
+        <table>
+          <tr>
+            <td class="profile-label">Full Name</td>
+            <td class="profile-value" id="profName">Packer</td>
+          </tr>
+          <tr>
+            <td class="profile-label">Username</td>
+            <td class="profile-value" id="profUser">packer_user</td>
+          </tr>
+          <tr>
+            <td class="profile-label">Role</td>
+            <td class="profile-value"><span class="tag tag-info" style="font-size:12px;">Logistics & Packer</span></td>
+          </tr>
+          <tr>
+            <td class="profile-label">Status</td>
+            <td class="profile-value"><span class="tag tag-success" style="font-size:12px;">Active</span></td>
+          </tr>
+        </table>
+      </div>
+
+      <button class="action-btn logout-btn-large" onclick="logout()">
+        <ion-icon name="log-out-outline"></ion-icon> Secure Logout
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('home')" id="nav-home">
+      <ion-icon name="home"></ion-icon>
+      <span>Home</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('history')" id="nav-history">
+      <ion-icon name="time"></ion-icon>
+      <span>History</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('profile')" id="nav-profile">
+      <ion-icon name="person"></ion-icon>
+      <span>Profile</span>
+    </div>
+  </nav>
+
+  <script>
+    // Authentication Check & Profile Setup
+    const packerUser = sessionStorage.getItem('packerUser');
+    if (!packerUser) {
+      window.location.href = 'index.html';
+    } else {
+      const displayName = packerUser.charAt(0).toUpperCase() + packerUser.slice(1);
+      document.getElementById('welcomeGreeting').innerText = 'Welcome, ' + displayName + '!';
+      document.getElementById('profName').innerText = displayName;
+      document.getElementById('profUser').innerText = packerUser;
+    }
+
+    function logout() {
+      sessionStorage.removeItem('packerUser');
+      window.location.href = 'index.html';
+    }
+
+    // Tab Switching Logic
+    function switchTab(tabId) {
+      // Update nav styles
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      document.getElementById('nav-' + tabId).classList.add('active');
+      
+      // Update nav icons (outline vs filled)
+      document.getElementById('nav-home').querySelector('ion-icon').name = tabId === 'home' ? 'home' : 'home-outline';
+      document.getElementById('nav-history').querySelector('ion-icon').name = tabId === 'history' ? 'time' : 'time-outline';
+      document.getElementById('nav-profile').querySelector('ion-icon').name = tabId === 'profile' ? 'person' : 'person-outline';
+
+      // Update content
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + tabId).classList.add('active');
+
+      // Fetch data if needed
+      if (tabId === 'home') fetchPendingOrders();
+      if (tabId === 'history') fetchHistoryOrders();
+    }
+
+    // Supabase Initialization
+    const SUPABASE_URL = 'https://tqtvxtipqbnvyquljgtg.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_na3VEkRe9gb7Nysy5crL1g_oR-M2W9x';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Render Helpers
+    function parseItems(o) {
+      let items = [];
+      let totalItems = 0;
+      try {
+        if (typeof o.items === 'string') items = JSON.parse(o.items);
+        else if (Array.isArray(o.items)) items = o.items;
+      } catch(e) { }
+      
+      let itemsHtml = '';
+      if (items.length > 0) {
+        itemsHtml = items.map(item => {
+          const qty = parseInt(item.qty || item.quantity || 1);
+          totalItems += qty;
+          const name = item.name || item.product_name || 'Product';
+          return `<div class="product-item"><span class="product-name">${name}</span><span class="product-qty">${qty}</span></div>`;
+        }).join('');
+      } else {
+        itemsHtml = `<div class="product-item"><span class="product-name" style="color: var(--text-secondary);">${o.items_summary || 'No detailed items provided'}</span></div>`;
+      }
+      return { itemsHtml, totalItems };
+    }
+
+    // Fetch Pending Orders (Home)
+    async function fetchPendingOrders() {
+      const container = document.getElementById('ordersContainer');
+      container.innerHTML = `<div class="loader"><ion-icon name="sync-outline"></ion-icon><div style="margin-top: 12px;">Loading orders...</div></div>`;
+
+      try {
+        const { data: orders, error } = await supabaseClient
+          .from('orders')
+          .select('*')
+          .in('status', ['pending', 'processing'])
+          .order('created_at', { ascending: true });
+
+        if (error) throw error;
+
+        if (!orders || orders.length === 0) {
+          container.innerHTML = `<div class="empty-state"><ion-icon name="checkmark-done-circle-outline"></ion-icon><h3>All caught up!</h3><p>There are no pending orders to pack at the moment.</p></div>`;
+          return;
+        }
+
+        let html = '';
+        orders.forEach(o => {
+          const shortId = (o.id || '').substring(0, 8).toUpperCase();
+          const vendorName = o.vendor_name || 'Unknown Vendor';
+          const dateObj = new Date(o.order_date || o.created_at);
+          const formattedDate = dateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+          const statusClass = o.status === 'pending' ? 'status-pending' : 'status-processing';
+          const statusText = o.status === 'pending' ? 'Pending' : 'Processing';
+          
+          const { itemsHtml, totalItems } = parseItems(o);
+
+          html += `
+            <div class="order-card" id="card-${o.id}">
+              <div class="order-header">
+                <div>
+                  <div class="order-id">#${shortId}</div>
+                  <div class="order-vendor"><ion-icon name="storefront-outline" style="vertical-align:-2px; margin-right:4px; color:var(--text-muted);"></ion-icon>${vendorName}</div>
+                </div>
+                <div style="text-align: right;">
+                  <div class="order-status ${statusClass}">${statusText}</div>
+                  <div class="order-date"><ion-icon name="calendar-outline"></ion-icon> ${formattedDate}</div>
+                </div>
+              </div>
+              <div class="products-list">
+                ${itemsHtml}
+                ${totalItems > 0 ? `<div class="total-items">Total Products: ${totalItems}</div>` : ''}
+              </div>
+              <button class="action-btn" id="btn-${o.id}" onclick="markReadyForPickup('${o.id}')">
+                <ion-icon name="checkmark-circle-outline"></ion-icon> Mark Ready for Pickup
+              </button>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = `<div class="empty-state" style="border-color: var(--danger);"><ion-icon name="warning-outline" style="color: var(--danger);"></ion-icon><h3 style="color: var(--danger);">Error</h3><p>${err.message}</p></div>`;
+      }
+    }
+
+    // Fetch History Orders (History)
+    async function fetchHistoryOrders() {
+      const container = document.getElementById('historyContainer');
+      container.innerHTML = `<div class="loader"><ion-icon name="sync-outline"></ion-icon><div style="margin-top: 12px;">Loading history...</div></div>`;
+
+      try {
+        const { data: orders, error } = await supabaseClient
+          .from('orders')
+          .select('*')
+          .in('status', ['dispatched', 'delivered'])
+          .order('order_date', { ascending: false }); // Sorted date-wise descending
+
+        if (error) throw error;
+
+        if (!orders || orders.length === 0) {
+          container.innerHTML = `<div class="empty-state"><ion-icon name="document-text-outline"></ion-icon><h3>No history found</h3><p>You haven't packed any orders yet.</p></div>`;
+          return;
+        }
+
+        let html = '';
+        let currentDateGroup = '';
+
+        orders.forEach(o => {
+          const shortId = (o.id || '').substring(0, 8).toUpperCase();
+          const vendorName = o.vendor_name || 'Unknown Vendor';
+          const dateObj = new Date(o.order_date || o.created_at);
+          const displayDate = dateObj.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
+          const statusClass = 'status-' + o.status;
+          const statusText = o.status === 'dispatched' ? 'Ready for Pickup' : 'Delivered';
+
+          // Insert Date Header if it's a new date group
+          if (displayDate !== currentDateGroup) {
+            currentDateGroup = displayDate;
+            html += `<div style="font-weight: 700; font-size: 15px; color: var(--text-main); margin: 24px 0 12px 0; padding-bottom: 8px; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 8px;"><ion-icon name="calendar" style="color: var(--primary);"></ion-icon>${currentDateGroup}</div>`;
+          }
+          
+          const { itemsHtml, totalItems } = parseItems(o);
+
+          html += `
+            <div class="order-card" style="opacity: 0.9;">
+              <div class="order-header">
+                <div>
+                  <div class="order-id" style="color: var(--text-secondary);">#${shortId}</div>
+                  <div class="order-vendor">${vendorName}</div>
+                </div>
+                <div style="text-align: right;">
+                  <div class="order-status ${statusClass}">${statusText}</div>
+                </div>
+              </div>
+              <div class="products-list">
+                ${itemsHtml}
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = `<div class="empty-state" style="border-color: var(--danger);"><ion-icon name="warning-outline" style="color: var(--danger);"></ion-icon><h3 style="color: var(--danger);">Error</h3><p>${err.message}</p></div>`;
+      }
+    }
+
+    async function markReadyForPickup(orderId) {
+      const btn = document.getElementById('btn-' + orderId);
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<ion-icon name="sync-outline" style="animation: spin 1s linear infinite;"></ion-icon> Updating...`;
+      btn.disabled = true;
+
+      try {
+        const { error } = await supabaseClient
+          .from('orders')
+          .update({ status: 'dispatched', updated_at: new Date().toISOString() })
+          .eq('id', orderId);
+
+        if (error) throw error;
+
+        const card = document.getElementById('card-' + orderId);
+        card.style.transform = 'scale(0.95)';
+        card.style.opacity = '0';
+        setTimeout(() => {
+          card.remove();
+          const container = document.getElementById('ordersContainer');
+          if (container.children.length === 0) {
+            container.innerHTML = `<div class="empty-state"><ion-icon name="checkmark-done-circle-outline"></ion-icon><h3>All caught up!</h3><p>There are no pending orders to pack at the moment.</p></div>`;
+          }
+        }, 300);
+
+      } catch (err) {
+        alert("Failed to update order: " + err.message);
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    }
+
+    // Initial load
+    fetchPendingOrders();
+    // Initialize nav icons
+    document.getElementById('nav-history').querySelector('ion-icon').name = 'time-outline';
+    document.getElementById('nav-profile').querySelector('ion-icon').name = 'person-outline';
+  </script>
+</body>
+</html>
