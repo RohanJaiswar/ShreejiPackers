@@ -697,7 +697,7 @@
       
       <div class="search-bar" style="margin-bottom: 16px; position:relative;">
         <ion-icon name="search" style="position:absolute; left:16px; top:50%; transform:translateY(-50%); color:var(--text-sec); font-size:18px;"></ion-icon>
-        <input type="text" id="historySearch" placeholder="Search orders, vendors..." style="width:100%; padding:14px 16px 14px 44px; border-radius:16px; border:1px solid var(--border); background:var(--surface); font-family:'Inter', sans-serif; font-size:14px; outline:none; box-shadow:var(--shadow-sm);" onkeyup="filterHistory()">
+        <input type="text" id="historySearch" placeholder="Search orders..." style="width:100%; padding:14px 16px 14px 44px; border-radius:16px; border:1px solid var(--border); background:var(--surface); font-family:'Inter', sans-serif; font-size:14px; outline:none; box-shadow:var(--shadow-sm);" onkeyup="filterHistory()">
       </div>
 
       <div class="history-filters">
@@ -976,7 +976,6 @@
         let html = '';
         pendingOrders.forEach((o, index) => {
           const shortId = (o.id || '').substring(0, 8).toUpperCase();
-          const vendorName = o.vendor_name || 'Unknown Vendor';
           
           let items = [];
           try {
@@ -1005,10 +1004,9 @@
 
           html += `
             <div class="order-card" id="card-${o.id}" style="animation: fadeUp 0.5s ${delay}s both;">
-              <div class="order-header-info">
+              <div class="order-header-info" style="align-items: center; margin-bottom: 16px;">
                 <div>
-                  <div class="order-id-badge">#${shortId}</div>
-                  <div class="vendor-title"><ion-icon name="storefront" style="color:var(--gold);"></ion-icon> ${vendorName}</div>
+                  <div class="order-id-badge" style="margin-bottom: 0;">#${shortId}</div>
                 </div>
                 <div class="time-badge"><ion-icon name="time-outline"></ion-icon> Today</div>
               </div>
@@ -1066,7 +1064,6 @@
         let html = '';
         historyOrders.forEach((o, index) => {
           const shortId = (o.id || '').substring(0, 8).toUpperCase();
-          const vendorName = o.vendor_name || 'Unknown Vendor';
           const dateObj = new Date(o.updated_at || o.order_date);
           const formattedDate = dateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
           const delay = index * 0.05;
@@ -1075,12 +1072,11 @@
             <div class="history-item" style="animation: fadeUp 0.4s ${delay}s both;">
               <div class="history-icon"><ion-icon name="checkmark-done"></ion-icon></div>
               <div class="history-card">
-                <div class="history-title">${vendorName}</div>
+                <div class="history-title">Order #${shortId}</div>
                 <div class="history-sub">
                   <span>${o.items_summary || 'Multiple Items'}</span>
-                  <span style="font-weight:600;">#${shortId}</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 8px;">
                   <span class="history-status">Packed & Ready</span>
                   <span style="font-size:12px; color:var(--text-sec); font-weight:500;">${formattedDate}</span>
                 </div>
