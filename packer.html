@@ -39,6 +39,46 @@
        --radius-md: 16px;
        --radius-sm: 12px;
        --bottom-nav-height: 80px;
+       --product-list-bg: rgba(244, 246, 248, 0.5);
+     }
+
+     body.dark-theme {
+       --bg: #0B1220;
+       --surface: #131B2E;
+       --text-main: #F1F5F9;
+       --text-sec: #94A3B8;
+       --border: rgba(255, 255, 255, 0.08);
+       --product-list-bg: rgba(11, 18, 32, 0.5);
+     }
+     body.dark-theme .order-id-badge {
+       background: rgba(255, 255, 255, 0.06);
+       color: #F1F5F9;
+       border-color: rgba(255, 255, 255, 0.1);
+     }
+     body.dark-theme .bottom-nav {
+       background: rgba(19, 27, 46, 0.85);
+       border-top: 1px solid rgba(255, 255, 255, 0.05);
+     }
+     body.dark-theme .filter-chip:not(.active) {
+       background: #1E293B;
+       color: var(--text-sec);
+       border-color: var(--border);
+     }
+     body.dark-theme .history-card {
+       background: var(--surface);
+       border-color: var(--border);
+     }
+     body.dark-theme .history-sub {
+       color: var(--text-sec);
+     }
+     body.dark-theme #historySearch {
+       background: var(--surface);
+       color: var(--text-main);
+       border-color: var(--border);
+     }
+     body.dark-theme .history-status {
+       background: rgba(34, 197, 94, 0.1);
+       color: #22C55E;
      }
 
      * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -48,6 +88,7 @@
        background-color: var(--bg);
        color: var(--text-main);
        overflow-x: hidden;
+       transition: background-color 0.3s ease, color 0.3s ease;
      }
 
      /* Typography */
@@ -150,15 +191,17 @@
        gap: 16px;
      }
 
-     .stat-card {
-       background: var(--surface);
-       border-radius: var(--radius-lg);
-       padding: 20px;
-       box-shadow: var(--shadow-lg);
-       border: 1px solid var(--border);
-       position: relative;
-       overflow: hidden;
-     }
+      .stat-card {
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        box-shadow: 0 10px 25px -5px rgba(11, 21, 51, 0.05);
+        border: 1px solid rgba(11, 21, 51, 0.04);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+      }
+      .stat-card:active { transform: scale(0.98); }
 
      .stat-card::before {
        content: '';
@@ -235,14 +278,14 @@
        background: var(--surface);
        border-radius: var(--radius-lg);
        padding: 24px;
-       margin-bottom: 16px;
-       box-shadow: var(--shadow-sm);
-       border: 1px solid var(--border);
-       transition: transform 0.3s ease, box-shadow 0.3s ease;
+       margin-bottom: 20px;
+       box-shadow: 0 12px 30px -10px rgba(11, 21, 51, 0.08);
+       border: 1px solid rgba(11, 21, 51, 0.04);
+       transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
        position: relative;
        overflow: hidden;
      }
-     .order-card:active { transform: scale(0.98); }
+     .order-card:active { transform: scale(0.985); }
      
      .order-card.packed-anim {
        animation: slideOutRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -255,57 +298,79 @@
      .order-header-info {
        display: flex;
        justify-content: space-between;
-       align-items: flex-start;
-       margin-bottom: 20px;
+       align-items: center;
+       margin-bottom: 16px;
      }
 
      .order-id-badge {
-       background: var(--navy-dark);
-       color: white;
+       background: rgba(11, 21, 51, 0.06);
+       color: var(--navy-dark);
        padding: 6px 12px;
        border-radius: 8px;
        font-size: 13px;
        font-weight: 700;
-       letter-spacing: 0.5px;
+       letter-spacing: 0.8px;
        display: inline-block;
-       margin-bottom: 12px;
+       border: 1px solid rgba(11, 21, 51, 0.08);
+       font-family: 'Inter', monospace;
      }
 
      .vendor-title {
-       font-size: 18px;
-       font-weight: 700;
-       color: var(--navy-dark);
-       display: flex;
-       align-items: center;
-       gap: 8px;
+       display: none;
      }
 
      .time-badge {
-       background: var(--bg);
-       color: var(--text-sec);
-       padding: 6px 10px;
+       background: rgba(34, 197, 94, 0.08);
+       color: #16a34a;
+       padding: 6px 12px;
        border-radius: 8px;
        font-size: 12px;
        font-weight: 600;
        display: flex;
        align-items: center;
-       gap: 4px;
+       gap: 6px;
      }
 
-     /* Products List */
-     .product-list {
-       background: var(--bg);
-       border-radius: var(--radius-md);
-       padding: 16px;
-       margin-bottom: 24px;
+     .live-pulse {
+       width: 8px;
+       height: 8px;
+       background-color: var(--green);
+       border-radius: 50%;
+       display: inline-block;
+       box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+       animation: pulse-ring 1.6s infinite;
      }
+
+     @keyframes pulse-ring {
+       0% {
+         transform: scale(0.95);
+         box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+       }
+       70% {
+         transform: scale(1);
+         box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+       }
+       100% {
+         transform: scale(0.95);
+         box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+       }
+     }
+
+      /* Products List */
+      .product-list {
+        background: var(--product-list-bg);
+        border: 1px solid rgba(0, 0, 0, 0.03);
+        border-radius: var(--radius-md);
+        padding: 16px;
+        margin-bottom: 20px;
+      }
 
      .product-item {
        display: flex;
        justify-content: space-between;
        align-items: center;
        padding: 12px 0;
-       border-bottom: 1px dashed rgba(0,0,0,0.1);
+       border-bottom: 1px dashed rgba(11, 21, 51, 0.08);
      }
      .product-item:last-child { border-bottom: none; padding-bottom: 0; }
      .product-item:first-child { padding-top: 0; }
@@ -326,24 +391,26 @@
      }
 
      .product-qty {
-       background: var(--surface);
-       color: var(--navy-dark);
-       font-size: 16px;
-       font-weight: 800;
-       padding: 4px 12px;
+       background: linear-gradient(135deg, var(--gold), var(--gold-light));
+       color: white;
+       font-size: 15px;
+       font-weight: 700;
+       padding: 4px 10px;
        border-radius: 8px;
-       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-       border: 1px solid var(--border);
+       box-shadow: 0 4px 10px rgba(200, 162, 77, 0.2);
+       border: none;
+       min-width: 44px;
+       text-align: center;
      }
 
      /* Primary Action Button */
      .btn-primary {
        width: 100%;
-       background: var(--green);
+       background: linear-gradient(135deg, #22C55E, #16A34A);
        color: white;
        border: none;
-       padding: 18px;
-       border-radius: 16px;
+       padding: 16px;
+       border-radius: var(--radius-md);
        font-size: 16px;
        font-weight: 700;
        font-family: 'Outfit', sans-serif;
@@ -352,15 +419,15 @@
        align-items: center;
        gap: 10px;
        cursor: pointer;
-       box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
-       transition: all 0.3s ease;
+       box-shadow: 0 6px 20px rgba(34, 197, 94, 0.25);
+       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
        position: relative;
        overflow: hidden;
      }
 
      .btn-primary:active {
-       transform: scale(0.97);
-       box-shadow: 0 4px 10px rgba(34, 197, 94, 0.2);
+       transform: scale(0.98);
+       box-shadow: 0 4px 10px rgba(34, 197, 94, 0.15);
      }
 
      .btn-primary:disabled {
@@ -473,16 +540,26 @@
 
      .history-title { font-weight: 700; font-size: 16px; color: var(--navy-dark); margin-bottom: 4px; }
      .history-sub { font-size: 13px; color: var(--text-sec); display: flex; justify-content: space-between; }
-     .history-status {
-       display: inline-block;
-       margin-top: 8px;
-       padding: 4px 10px;
-       background: var(--gold-dim);
-       color: var(--gold);
-       border-radius: 6px;
-       font-size: 12px;
-       font-weight: 700;
-     }
+      .history-status {
+        display: inline-block;
+        margin-top: 8px;
+        padding: 4px 10px;
+        background: var(--green-light);
+        color: #16A34A;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .status-pending-chip {
+        display: inline-block;
+        margin-top: 8px;
+        padding: 4px 10px;
+        background: var(--gold-dim);
+        color: var(--gold);
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 700;
+      }
 
      /* Profile View */
      .profile-header-card {
@@ -564,21 +641,25 @@
      .btn-logout:active { transform: scale(0.98); }
 
      /* Bottom Navigation (Glassmorphism) */
-     .bottom-nav {
-       position: fixed;
-       bottom: 0; left: 0; right: 0;
-       height: var(--bottom-nav-height);
-       background: rgba(255, 255, 255, 0.85);
-       backdrop-filter: blur(20px);
-       -webkit-backdrop-filter: blur(20px);
-       border-top: 1px solid rgba(255, 255, 255, 0.5);
-       display: flex;
-       justify-content: space-around;
-       align-items: center;
-       padding-bottom: env(safe-area-inset-bottom);
-       box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
-       z-index: 100;
-     }
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 480px;
+        height: var(--bottom-nav-height);
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(255, 255, 255, 0.5);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding-bottom: env(safe-area-inset-bottom);
+        box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
+        z-index: 100;
+      }
 
      .nav-item {
        display: flex;
@@ -628,9 +709,268 @@
        background-image: linear-gradient(90deg, rgba(255,255,255,0) 0, rgba(255,255,255,0.4) 20%, rgba(255,255,255,0.4) 60%, rgba(255,255,255,0));
        animation: shimmer 2s infinite;
      }
-     @keyframes shimmer { 100% { transform: translateX(100%); } }
+      @keyframes shimmer { 100% { transform: translateX(100%); } }
 
-  </style>
+      /* Red pulse ring for overdue alerts */
+      @keyframes pulse-ring-red {
+        0% {
+          transform: scale(0.95);
+          box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+        }
+        70% {
+          transform: scale(1);
+          box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+        }
+        100% {
+          transform: scale(0.95);
+          box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+        }
+      }
+
+      /* Dark mode overrides for typography and contrast */
+      body.dark-theme h1, 
+      body.dark-theme h2, 
+      body.dark-theme h3, 
+      body.dark-theme h4,
+      body.dark-theme .stat-value,
+      body.dark-theme .section-title,
+      body.dark-theme .product-name,
+      body.dark-theme .history-title,
+      body.dark-theme .profile-name,
+      body.dark-theme .setting-text,
+      body.dark-theme .nav-item.active {
+        color: #F1F5F9;
+      }
+      body.dark-theme .stat-card {
+        border-color: var(--border);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      }
+      body.dark-theme .order-card {
+        border-color: var(--border);
+        box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.4);
+      }
+      body.dark-theme .history-card {
+        border-color: var(--border);
+        box-shadow: var(--shadow-sm);
+      }
+      body.dark-theme .profile-header-card,
+      body.dark-theme .settings-list {
+        border-color: var(--border);
+        box-shadow: var(--shadow-sm);
+      }
+      body.dark-theme .empty-state {
+        border-color: rgba(255, 255, 255, 0.1);
+        background: var(--surface);
+      }
+      body.dark-theme .empty-icon {
+        background: rgba(255, 255, 255, 0.05);
+      }
+      body.dark-theme .product-item {
+        border-color: rgba(255, 255, 255, 0.08);
+      }
+      body.dark-theme .setting-icon {
+        color: #F1F5F9;
+        background: #1E293B;
+      }
+      body.dark-theme .history-icon {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22C55E;
+      }
+      body.dark-theme .btn-logout {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.3);
+        color: #F87171;
+      }
+
+      /* Toast Notification System */
+      #toastContainer {
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        pointer-events: none;
+        width: calc(100% - 48px);
+        max-width: 432px;
+      }
+      .toast {
+        background: rgba(11, 21, 51, 0.95);
+        color: white;
+        padding: 12px 18px;
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transform: translateY(20px);
+        opacity: 0;
+        animation: toastFadeIn 0.3s forwards, toastFadeOut 0.3s 2.7s forwards;
+      }
+      body.dark-theme .toast {
+        background: rgba(255, 255, 255, 0.95);
+        color: var(--navy-dark);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      @keyframes toastFadeIn {
+        to { transform: translateY(0); opacity: 1; }
+      }
+      @keyframes toastFadeOut {
+        to { transform: translateY(-20px); opacity: 0; }
+      }
+
+      /* Support Bottom Sheet Modal */
+      .modal-overlay {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(11, 21, 51, 0.6);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        z-index: 200;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+      .modal-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .modal-container {
+        width: 100%;
+        max-width: 480px;
+        background: var(--surface);
+        border-top-left-radius: 32px;
+        border-top-right-radius: 32px;
+        padding: 24px 24px 40px 24px;
+        box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+        transform: translateY(100%);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid var(--border);
+        border-bottom: none;
+      }
+      .modal-overlay.active .modal-container {
+        transform: translateY(0);
+      }
+      .modal-drag-bar {
+        width: 40px;
+        height: 5px;
+        background: var(--border);
+        border-radius: 3px;
+        margin: 0 auto 20px auto;
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .modal-header h3 {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--navy-dark);
+      }
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 28px;
+        color: var(--text-sec);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+      }
+      .modal-close:active { transform: scale(0.9); }
+      .modal-body {
+        text-align: center;
+      }
+      .support-illustration {
+        width: 72px;
+        height: 72px;
+        background: var(--gold-dim);
+        color: var(--gold);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        margin: 0 auto 16px auto;
+        box-shadow: 0 8px 20px rgba(200, 162, 77, 0.15);
+      }
+      .modal-body h4 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--navy-dark);
+        margin-bottom: 8px;
+      }
+      .modal-body p {
+        font-size: 14px;
+        color: var(--text-sec);
+        line-height: 1.5;
+        margin-bottom: 28px;
+        padding: 0 10px;
+      }
+      .support-options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .support-btn {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        padding: 16px;
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        color: var(--text-main);
+        text-align: left;
+        transition: all 0.2s ease;
+      }
+      .support-btn:active {
+        transform: scale(0.98);
+        background: rgba(0, 0, 0, 0.02);
+      }
+      body.dark-theme .support-btn:active {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .support-btn ion-icon {
+        font-size: 24px;
+        color: var(--gold);
+        background: var(--surface);
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+      }
+      .support-btn div {
+        display: flex;
+        flex-direction: column;
+      }
+      .support-btn strong {
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .support-btn span {
+        font-size: 13px;
+        color: var(--text-sec);
+        margin-top: 2px;
+      }
+
+   </style>
 </head>
 <body>
 
@@ -736,14 +1076,14 @@
           </div>
           <ion-icon name="toggle-outline" id="darkIcon" style="font-size:32px; color:var(--text-sec);"></ion-icon>
         </div>
-        <div class="setting-item">
+        <div class="setting-item" id="notifToggle">
           <div class="setting-left">
             <div class="setting-icon"><ion-icon name="notifications"></ion-icon></div>
             <div class="setting-text">Push Notifications</div>
           </div>
-          <ion-icon name="toggle" style="font-size:32px; color:var(--green);"></ion-icon>
+          <ion-icon name="toggle" id="notifIcon" style="font-size:32px; color:var(--green);"></ion-icon>
         </div>
-        <div class="setting-item">
+        <div class="setting-item" id="supportToggle" onclick="openSupportModal()">
           <div class="setting-left">
             <div class="setting-icon"><ion-icon name="help-buoy"></ion-icon></div>
             <div class="setting-text">Help & Support</div>
@@ -757,6 +1097,45 @@
       </button>
     </main>
 
+  </div>
+
+  <!-- Toast Container Wrapper -->
+  <div id="toastContainer"></div>
+
+  <!-- Support Modal -->
+  <div class="modal-overlay" id="supportModal">
+    <div class="modal-container">
+      <div class="modal-drag-bar"></div>
+      <div class="modal-header">
+        <h3>Help & Support</h3>
+        <button class="modal-close" onclick="closeSupportModal()"><ion-icon name="close-circle"></ion-icon></button>
+      </div>
+      <div class="modal-body">
+        <div class="support-illustration">
+          <ion-icon name="help-buoy"></ion-icon>
+        </div>
+        <h4>Need assistance, partner?</h4>
+        <p>If you encounter issues with packing quantities, orders, or database sync, reach out to our operations team.</p>
+        
+        <div class="support-options">
+          <a href="tel:+919876543210" class="support-btn">
+            <ion-icon name="call"></ion-icon>
+            <div>
+              <strong>Call Support Hotline</strong>
+              <span>+91 98765 43210</span>
+            </div>
+          </a>
+          
+          <a href="mailto:support@shreejimilk.com?subject=Packer Support Request" class="support-btn">
+            <ion-icon name="mail"></ion-icon>
+            <div>
+              <strong>Email Operations</strong>
+              <span>support@shreejimilk.com</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Bottom Navigation -->
@@ -824,15 +1203,109 @@
       window.location.href = 'index.html';
     }
 
-    // Dark mode visual toggle (functional UI representation)
-    document.getElementById('darkModeToggle').addEventListener('click', function() {
-      const icon = document.getElementById('darkIcon');
-      if (icon.getAttribute('name') === 'toggle-outline') {
-        icon.setAttribute('name', 'toggle');
-        icon.style.color = 'var(--gold)';
+    // Toast Notification Utility
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      
+      let iconName = 'information-circle-outline';
+      if (type === 'success') iconName = 'checkmark-circle-outline';
+      else if (type === 'error') iconName = 'alert-circle-outline';
+      else if (type === 'warning') iconName = 'warning-outline';
+      
+      toast.innerHTML = `
+        <ion-icon name="${iconName}" style="font-size: 18px; color: var(--gold);"></ion-icon>
+        <span>${message}</span>
+      `;
+      
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+
+    // Support Modal Handlers
+    function openSupportModal() {
+      document.getElementById('supportModal').classList.add('active');
+    }
+
+    // Backdrop click close handler
+    document.addEventListener('DOMContentLoaded', () => {
+      const supportModal = document.getElementById('supportModal');
+      if (supportModal) {
+        supportModal.addEventListener('click', function(e) {
+          if (e.target === this) {
+            closeSupportModal();
+          }
+        });
+      }
+    });
+
+    function closeSupportModal() {
+      document.getElementById('supportModal').classList.remove('active');
+    }
+
+    // Profile Avatar Interactivity
+    document.getElementById('profileLgAvatar').addEventListener('click', function() {
+      showToast('Avatar photo upload is restricted by administrator', 'warning');
+    });
+
+    // Dark mode visual toggle (persistent localStorage logic)
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const darkIcon = document.getElementById('darkIcon');
+
+    // Init theme
+    if (localStorage.getItem('darkMode') === 'enabled') {
+      document.body.classList.add('dark-theme');
+      darkIcon.setAttribute('name', 'toggle');
+      darkIcon.style.color = 'var(--gold)';
+    }
+
+    darkModeToggle.addEventListener('click', function() {
+      if (document.body.classList.contains('dark-theme')) {
+        document.body.classList.remove('dark-theme');
+        darkIcon.setAttribute('name', 'toggle-outline');
+        darkIcon.style.color = 'var(--text-sec)';
+        localStorage.setItem('darkMode', 'disabled');
+        showToast('Dark Mode disabled');
       } else {
-        icon.setAttribute('name', 'toggle-outline');
-        icon.style.color = 'var(--text-sec)';
+        document.body.classList.add('dark-theme');
+        darkIcon.setAttribute('name', 'toggle');
+        darkIcon.style.color = 'var(--gold)';
+        localStorage.setItem('darkMode', 'enabled');
+        showToast('Dark Mode enabled');
+      }
+    });
+
+    // Push Notifications Toggle Logic
+    const notifToggle = document.getElementById('notifToggle');
+    const notifIcon = document.getElementById('notifIcon');
+
+    // Init notification state
+    if (localStorage.getItem('pushNotifications') === 'disabled') {
+      notifIcon.setAttribute('name', 'toggle-outline');
+      notifIcon.style.color = 'var(--text-sec)';
+    } else {
+      notifIcon.setAttribute('name', 'toggle');
+      notifIcon.style.color = 'var(--green)';
+      localStorage.setItem('pushNotifications', 'enabled');
+    }
+
+    notifToggle.addEventListener('click', function() {
+      if (localStorage.getItem('pushNotifications') === 'enabled') {
+        notifIcon.setAttribute('name', 'toggle-outline');
+        notifIcon.style.color = 'var(--text-sec)';
+        localStorage.setItem('pushNotifications', 'disabled');
+        showToast('Push Notifications disabled');
+      } else {
+        notifIcon.setAttribute('name', 'toggle');
+        notifIcon.style.color = 'var(--green)';
+        localStorage.setItem('pushNotifications', 'enabled');
+        showToast('Push Notifications enabled');
       }
     });
 
@@ -883,20 +1356,12 @@
     function setFilter(element) {
       document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
       element.classList.add('active');
+      fetchHistoryOrders();
     }
 
     // History Search
     function filterHistory() {
-      const query = document.getElementById('historySearch').value.toLowerCase();
-      const items = document.querySelectorAll('.history-item');
-      items.forEach(item => {
-        const text = item.innerText.toLowerCase();
-        if (text.includes(query)) {
-          item.style.display = 'flex';
-        } else {
-          item.style.display = 'none';
-        }
-      });
+      renderHistoryList();
     }
 
     // Supabase Initialization
@@ -920,16 +1385,68 @@
       window.requestAnimationFrame(step);
     }
 
-    async function loadData() {
+    async function loadData(silent = false) {
       const syncBtn = document.getElementById('syncBtn');
-      syncBtn.classList.add('spinning');
+      if (syncBtn) syncBtn.classList.add('spinning');
       
+      window.historyLoaded = false; // Reset history load state on sync to force fresh load later
       await fetchPendingOrders();
       if (document.getElementById('view-history').classList.contains('active')) {
         await fetchHistoryOrders();
+        window.historyLoaded = true;
       }
       
-      setTimeout(() => syncBtn.classList.remove('spinning'), 500);
+      if (!silent) {
+        showToast('Dashboard data updated', 'success');
+      }
+      if (syncBtn) {
+        setTimeout(() => syncBtn.classList.remove('spinning'), 500);
+      }
+    }
+
+    // Helper to parse dates without timezone shift
+    function safeParseDate(dateInput) {
+      if (!dateInput) return new Date();
+      if (typeof dateInput === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+        const [year, month, day] = dateInput.split('-').map(Number);
+        return new Date(year, month - 1, day);
+      }
+      return new Date(dateInput);
+    }
+
+    // Helper to format Date objects or string dates into local YYYY-MM-DD
+    function getLocalDateString(dateInput) {
+      if (!dateInput) return '';
+      const d = new Date(dateInput);
+      if (isNaN(d.getTime())) return '';
+      if (typeof dateInput === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+        return dateInput;
+      }
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    // Helper to build a dynamic time badge for pending orders
+    function getTimeBadgeHtml(orderDateStr) {
+      const today = new Date().toISOString().split('T')[0];
+      if (orderDateStr === today) {
+        return `
+          <div class="time-badge">
+            <span class="live-pulse"></span>
+            Today
+          </div>
+        `;
+      } else {
+        const formattedDate = safeParseDate(orderDateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+        return `
+          <div class="time-badge overdue" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border-color: rgba(239, 68, 68, 0.15);">
+            <span class="live-pulse" style="background-color: #ef4444; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); animation-name: pulse-ring-red;"></span>
+            Overdue (${formattedDate})
+          </div>
+        `;
+      }
     }
 
     async function fetchPendingOrders() {
@@ -940,34 +1457,40 @@
       try {
         const today = new Date().toISOString().split('T')[0];
         
-        const { data: todayOrders, error } = await supabaseClient
+        // Fetch all pending orders to prevent missing older ones
+        const { data: pendingOrders, error: pError } = await supabaseClient
           .from('orders')
           .select('*')
+          .eq('status', 'pending')
+          .order('created_at', { ascending: true })
+          .limit(50);
+
+        if (pError) throw pError;
+
+        // Fetch today's packed count (status = delivered and order_date = today)
+        const { data: todayPacked, error: dError } = await supabaseClient
+          .from('orders')
+          .select('id')
           .eq('order_date', today)
-          .order('created_at', { ascending: true });
+          .eq('status', 'delivered');
 
-        if (error) throw error;
+        if (dError) throw dError;
 
-        let pendingOrders = [];
-        let packedCount = 0;
-
-        if (todayOrders) {
-          pendingOrders = todayOrders.filter(o => o.status === 'pending');
-          packedCount = todayOrders.filter(o => o.status === 'delivered').length;
-        }
+        const packedCount = todayPacked ? todayPacked.length : 0;
+        const pendingCount = pendingOrders ? pendingOrders.length : 0;
 
         // Animate Counters
         const currentP = parseInt(pEl.innerText) || 0;
         const currentD = parseInt(dEl.innerText) || 0;
-        animateValue("dashPending", currentP, pendingOrders.length, 1000);
+        animateValue("dashPending", currentP, pendingCount, 1000);
         animateValue("dashPacked", currentD, packedCount, 1000);
 
-        if (pendingOrders.length === 0) {
+        if (pendingCount === 0) {
           container.innerHTML = `
             <div class="empty-state">
               <div class="empty-icon"><ion-icon name="checkmark-circle"></ion-icon></div>
               <h3>All Caught Up!</h3>
-              <p>You have successfully packed all pending orders for today. Take a break.</p>
+              <p>You have successfully packed all pending orders. Take a break.</p>
             </div>
           `;
           return;
@@ -999,16 +1522,15 @@
             itemsHtml = `<div class="product-item"><div class="product-name" style="color:var(--text-sec);">${o.items_summary || 'No items listed'}</div></div>`;
           }
 
-          // Cascade animation delay
-          const delay = index * 0.1;
+          const delay = index * 0.08;
 
           html += `
             <div class="order-card" id="card-${o.id}" style="animation: fadeUp 0.5s ${delay}s both;">
-              <div class="order-header-info" style="align-items: center; margin-bottom: 16px;">
+              <div class="order-header-info">
                 <div>
                   <div class="order-id-badge" style="margin-bottom: 0;">#${shortId}</div>
                 </div>
-                <div class="time-badge"><ion-icon name="time-outline"></ion-icon> Today</div>
+                ${getTimeBadgeHtml(o.order_date)}
               </div>
               
               <div class="product-list">
@@ -1030,69 +1552,164 @@
           <div class="empty-state">
             <div class="empty-icon" style="color:var(--danger); background:#FEF2F2;"><ion-icon name="warning"></ion-icon></div>
             <h3>Connection Error</h3>
-            <p>Could not fetch orders. Pull to refresh or try again later.</p>
+            <p>Could not fetch orders. Please pull to refresh or try again later.</p>
           </div>
         `;
+        showToast('Failed to fetch pending orders', 'error');
       }
     }
 
+    let historyOrdersData = [];
+
     async function fetchHistoryOrders() {
       const container = document.getElementById('historyOrdersContainer');
-      container.innerHTML = `<div class="history-item"><div class="history-icon skeleton" style="box-shadow:none;"></div><div class="history-card skeleton" style="height: 80px;"></div></div>`;
+      container.innerHTML = `
+        <div class="history-item">
+          <div class="history-icon skeleton" style="box-shadow:none;"></div>
+          <div class="history-card skeleton" style="height: 80px;"></div>
+        </div>
+      `;
 
       try {
-        const { data: historyOrders, error } = await supabaseClient
+        const activeFilterChip = document.querySelector('.filter-chip.active');
+        const filterText = activeFilterChip ? activeFilterChip.innerText.trim() : 'All Delivered';
+
+        let query = supabaseClient
           .from('orders')
-          .select('id, vendor_name, status, updated_at, items_summary, order_date')
-          .eq('status', 'delivered')
-          .order('updated_at', { ascending: false })
-          .limit(20);
+          .select('id, vendor_name, status, updated_at, created_at, items, items_summary, order_date');
+
+        const todayStr = getLocalDateString(new Date());
+
+        if (filterText === 'All Delivered') {
+          query = query.eq('status', 'delivered').order('updated_at', { ascending: false }).limit(100);
+        } else if (filterText === 'Today') {
+          const localStartOfDay = new Date();
+          localStartOfDay.setHours(0,0,0,0);
+          const startOfDayIso = localStartOfDay.toISOString();
+          query = query.eq('status', 'delivered').gte('updated_at', startOfDayIso).order('updated_at', { ascending: false });
+        } else if (filterText === 'This Week') {
+          const now = new Date();
+          const startOfWeek = new Date();
+          startOfWeek.setDate(now.getDate() - now.getDay()); // Sunday
+          startOfWeek.setHours(0,0,0,0);
+          const startOfWeekIso = startOfWeek.toISOString();
+          query = query.eq('status', 'delivered').gte('updated_at', startOfWeekIso).order('updated_at', { ascending: false });
+        } else if (filterText === 'Pending') {
+          query = query.eq('status', 'pending').order('created_at', { ascending: true });
+        }
+
+        const { data: historyOrders, error } = await query;
 
         if (error) throw error;
 
-        if (!historyOrders || historyOrders.length === 0) {
-          container.innerHTML = `
-            <div class="empty-state" style="margin-top:20px;">
-              <div class="empty-icon" style="background:var(--bg); color:var(--text-sec);"><ion-icon name="document-text"></ion-icon></div>
-              <h3>No History</h3>
-              <p>You haven't packed any orders yet.</p>
-            </div>
-          `;
-          return;
-        }
-
-        let html = '';
-        historyOrders.forEach((o, index) => {
-          const shortId = (o.id || '').substring(0, 8).toUpperCase();
-          const dateObj = new Date(o.updated_at || o.order_date);
-          const formattedDate = dateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-          const delay = index * 0.05;
-
-          html += `
-            <div class="history-item" style="animation: fadeUp 0.4s ${delay}s both;">
-              <div class="history-icon"><ion-icon name="checkmark-done"></ion-icon></div>
-              <div class="history-card">
-                <div class="history-title">Order #${shortId}</div>
-                <div class="history-sub">
-                  <span>${o.items_summary || 'Multiple Items'}</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 8px;">
-                  <span class="history-status">Packed & Ready</span>
-                  <span style="font-size:12px; color:var(--text-sec); font-weight:500;">${formattedDate}</span>
-                </div>
-              </div>
-            </div>
-          `;
-        });
-        container.innerHTML = html;
+        historyOrdersData = historyOrders || [];
+        renderHistoryList();
       } catch (err) {
+        console.error("Error loading history:", err);
         container.innerHTML = `
           <div class="empty-state" style="margin-top:20px;">
             <div class="empty-icon" style="color:var(--danger); background:#FEF2F2;"><ion-icon name="warning"></ion-icon></div>
             <h3>Error Loading History</h3>
+            <p>Could not load the history data. Please check your connection.</p>
           </div>
         `;
+        showToast('Failed to load packing history', 'error');
       }
+    }
+
+    function renderHistoryList() {
+      const container = document.getElementById('historyOrdersContainer');
+      const searchQuery = document.getElementById('historySearch').value.toLowerCase().trim();
+
+      let filtered = historyOrdersData;
+
+      // Filter by search query
+      if (searchQuery) {
+        filtered = filtered.filter(o => {
+          // Compute items representation to display and search on
+          let displayItems = o.items_summary;
+          if (!displayItems && o.items) {
+            let parsedItems = [];
+            try {
+              if (typeof o.items === 'string') parsedItems = JSON.parse(o.items);
+              else if (Array.isArray(o.items)) parsedItems = o.items;
+            } catch(e) {}
+            if (parsedItems.length > 0) {
+              displayItems = parsedItems.map(item => `${item.name || item.product_name || 'Product'} x${item.qty || item.quantity || 1}`).join(', ');
+            }
+          }
+          if (!displayItems) displayItems = 'Multiple Items';
+          o._computed_display_items = displayItems; // Cache it for render
+
+          const shortId = (o.id || '').substring(0, 8).toLowerCase();
+          const fullId = (o.id || '').toLowerCase();
+          const itemsSummary = (displayItems || '').toLowerCase();
+          return shortId.includes(searchQuery) || fullId.includes(searchQuery) || itemsSummary.includes(searchQuery);
+        });
+      } else {
+        // Compute display items for all if not searching
+        filtered.forEach(o => {
+          let displayItems = o.items_summary;
+          if (!displayItems && o.items) {
+            let parsedItems = [];
+            try {
+              if (typeof o.items === 'string') parsedItems = JSON.parse(o.items);
+              else if (Array.isArray(o.items)) parsedItems = o.items;
+            } catch(e) {}
+            if (parsedItems.length > 0) {
+              displayItems = parsedItems.map(item => `${item.name || item.product_name || 'Product'} x${item.qty || item.quantity || 1}`).join(', ');
+            }
+          }
+          if (!displayItems) displayItems = 'Multiple Items';
+          o._computed_display_items = displayItems;
+        });
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state" style="margin-top:20px;">
+            <div class="empty-icon" style="background:var(--bg); color:var(--text-sec);"><ion-icon name="document-text"></ion-icon></div>
+            <h3>No Orders Found</h3>
+            <p>There are no orders that match this filter or search query.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      filtered.forEach((o, index) => {
+        const shortId = (o.id || '').substring(0, 8).toUpperCase();
+        const rawDate = o.updated_at || o.created_at || o.order_date;
+        const dateObj = safeParseDate(rawDate);
+        const hasTime = !!(o.updated_at || o.created_at);
+        const formatOptions = hasTime
+          ? { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true }
+          : { day: 'numeric', month: 'short' };
+        const formattedDate = dateObj.toLocaleDateString('en-IN', formatOptions);
+        const delay = index * 0.03;
+        const isPending = o.status === 'pending';
+        const statusText = isPending ? 'Pending' : 'Packed & Ready';
+        const statusClass = isPending ? 'status-pending-chip' : 'history-status';
+
+        html += `
+          <div class="history-item" style="animation: fadeUp 0.4s ${delay}s both;">
+            <div class="history-icon" style="${isPending ? 'background:rgba(200, 162, 77, 0.15); color:var(--gold);' : ''}">
+              <ion-icon name="${isPending ? 'hourglass-outline' : 'checkmark-done'}"></ion-icon>
+            </div>
+            <div class="history-card">
+              <div class="history-title">Order #${shortId}</div>
+              <div class="history-sub">
+                <span>${o._computed_display_items || 'Multiple Items'}</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 8px;">
+                <span class="${statusClass}">${statusText}</span>
+                <span style="font-size:12px; color:var(--text-sec); font-weight:500;">${formattedDate}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
     }
 
     async function markReadyForPickup(event, orderId) {
@@ -1111,6 +1728,9 @@
           .eq('id', orderId);
 
         if (error) throw error;
+
+        const shortId = (orderId || '').substring(0, 8).toUpperCase();
+        showToast(`Order #${shortId} packed & ready!`, 'success');
 
         if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
 
@@ -1139,21 +1759,22 @@
               <div class="empty-state" style="animation: fadeUp 0.4s forwards;">
                 <div class="empty-icon"><ion-icon name="checkmark-circle"></ion-icon></div>
                 <h3>All Caught Up!</h3>
-                <p>You have successfully packed all pending orders for today. Take a break.</p>
+                <p>You have successfully packed all pending orders. Take a break.</p>
               </div>
             `;
           }
         }, 500);
 
       } catch (err) {
-        alert("Failed to update status: " + err.message);
+        showToast("Failed to update status", "error");
+        console.error("Failed to update order status:", err);
         btn.innerHTML = originalText;
         btn.disabled = false;
       }
     }
 
     // Load data on start
-    window.addEventListener('DOMContentLoaded', loadData);
+    window.addEventListener('DOMContentLoaded', () => loadData(true));
   </script>
 </body>
 </html>
